@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String  @id @default(uuid())
+  discordId String @unique
+  username  String
+  tracker Tracker?
+  created_at DateTime @default(now())
+}
+
+model Tracker {
+  id        String  @id @default(uuid())
+
+  user User @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  manga MangaTrackerRelation[]
+}
+
+model Manga {
+  id        String  @id @default(uuid())
+  mangadexId String  @unique
+  name      String
+  chapters Chapter[]
+  tracker MangaTrackerRelation[]
+}
+
+model MangaTrackerRelation {
+  id        String  @id @default(uuid())
+
+  tracker Tracker @relation(fields: [trackerId], references: [id])
+  trackerId String 
+
+  manga Manga @relation(fields: [mangaId], references: [id])
+  mangaId String
+
+  latestChapterId String
+  coverFilename    String
+  createdAt        DateTime @default(now())
+
+  @@unique([trackerId, mangaId])
+
+}
+
+model Chapter {
+  id        String  @id @default(uuid())
+  mangadexId String
+  chapter   Float
+  manga     Manga   @relation(fields: [mangaId], references: [id])
+  mangaId   String
+}
+
+model Cover {
+  id        String  @id @default(uuid())
+  mangadexId String
+  filename String
+}

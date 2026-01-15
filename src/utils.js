@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { format } from 'path';
 
 export async function DiscordRequest(endpoint, options) {
   // append endpoint to root API URL
@@ -38,8 +39,3 @@ export async function InstallGlobalCommands(appId, commands) {
   }
 }
 
-// Simple method that returns a random emoji from list
-
-export function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
